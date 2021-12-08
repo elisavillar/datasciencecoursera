@@ -33,7 +33,7 @@ pollutantmean <- function(directory, pollutant, id = 1:332){
     
     individual_file <- read.csv(all_files[i])
     
-    pollutan_data <- rbind(pollutant_data, individual_file)
+    pollutant_data <- rbind(pollutant_data, individual_file)
     
   }
   
