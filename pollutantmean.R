@@ -23,7 +23,7 @@ pollutantmean <- function(directory, pollutant, id = 1:332){
   
   # Initialize the data frame to add the data
   
-  pollutan_data<- data.frame()
+  pollutant_data<- data.frame()
   
   
   # Loop for each file, read it and bind it to the data frame
@@ -31,13 +31,13 @@ pollutantmean <- function(directory, pollutant, id = 1:332){
   for (i in id) {
     
     individual_file <- read.csv(all_files[i])
-    pollutan_data <- rbind(pollutan_data, individual_file)
+    pollutan_data <- rbind(pollutant_data, individual_file)
     
   }
   
   # Calculate the mean (ignoring NA values)
   
-  return(mean(pollutan_data[[pollutant]],na.rm = TRUE))
+  return(mean(pollutant_data[[pollutant]],na.rm = TRUE))
   
 }
 
