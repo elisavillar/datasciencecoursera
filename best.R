@@ -13,11 +13,11 @@ library(dplyr)
     
     outcome_data <- read.csv("outcome-of-care-measures.csv")
     
-    ## Put in lower case outcome 
+    ## Put the outcome in lower case
     
     outcome <- tolower(outcome)
     
-    ## Put in capital letters the State
+    ## Put the State in capital letters
     
     state <- toupper(state)
     
