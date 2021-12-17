@@ -1,68 +1,70 @@
 ############# Programming Assignment 3 #####################
 
-########### Finding the best hospital in a state############
+###### Plot the 30-day mortality rates for heart attack ####
 
 # Load packages
 
 library(dplyr)
 
-
-best <- function(state, outcome) {
   
-  ## Read outcome data
-  
-  outcome_data <- read.csv("outcome-of-care-measures.csv")
-  
-  ## Put outcome in lower case 
-  
-  outcome <- tolower(outcome)
-  
-  ## Put the State in capital letters
-  
-  state <- toupper(state)
-  
-  ## Check that state and outcome are valid
-  
-  if (!state %in% unique(outcome_data[["State"]])) {
+  best <- function(state, outcome) {
     
-    stop("Invalid State", call. = TRUE)
+    ## Read outcome data
     
-  } 
-  
-  if (!outcome %in% c("heart attack", "heart failure", "pneumonia")) {
+    outcome_data <- read.csv("outcome-of-care-measures.csv")
     
-    stop("Invalid Outcome", call. = TRUE)
+    ## Put in lower case outcome 
     
-  } 
-  
-  ## Filter by state
-  
-  outcome_data <- outcome_data[grep(state, outcome_data$State), ]
-  
-  
-  ## Getting the column for the selected outcome
-  
-  col <- if (outcome == "heart attack") {
-    11
-  } else if (outcome == "heart failure") {
-    17
-  } else {
-    23
+    outcome <- tolower(outcome)
+    
+    ## Put in capital letters the State
+    
+    state <- toupper(state)
+    
+    ## Check that state and outcome are valid
+    
+    if (!state %in% unique(outcome_data[["State"]])) {
+      
+      stop("Invalid State", call. = TRUE)
+      
+    } 
+    
+    if (!outcome %in% c("heart attack", "heart failure", "pneumonia")) {
+      
+      stop("Invalid Outcome", call. = TRUE)
+      
+    } 
+    
+    ## Filter by state
+    
+    outcome_data <- outcome_data[grep(state, outcome_data$State), ]
+    
+    
+    ## Getting the column for the selected outcome
+    
+    col <- if (outcome == "heart attack") {
+      11
+    } else if (outcome == "heart failure") {
+      17
+    } else {
+      23
+    }
+    
+    ## Getting the lowest rate in the State and outcome selected
+    
+    outcome_data <- select(outcome_data, 2, all_of(col))
+    
+    colnames(outcome_data) <- c("Hospital", "Outcome")
+    
+    suppressWarnings(outcome_data$Outcome <- as.numeric(as.character(outcome_data$Outcome)))
+    
+    outcome_data <- outcome_data[order(outcome_data$Outcome), ]
+    
+    ## Return hospital name in that state with lowest 30-day death rate
+    
+    return(outcome_data[[1, 1]])
+    
   }
-  
-  ## Getting the lowest rate in the State and outcome selected
-  
-  outcome_data <- select(outcome_data, 2, all_of(col))
-  
-  colnames(outcome_data) <- c("Hospital", "Outcome")
-  
-  result <- suppressWarnings(outcome_data <- outcome_data[which.min(outcome_data$Outcome), ])
-  
-  ## Return hospital name in that state with lowest 30-day death rate
-  
-  return(outcome_data[["Hospital"]])
-  
-}
 
 ####### Test ############
 
@@ -72,3 +74,4 @@ best("MD", "heart attack")
 best("MD", "pneumonia")
 best("BB", "heart attack")
 best("NY", "hert attack")
+
