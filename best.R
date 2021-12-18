@@ -6,65 +6,77 @@
 
 library(dplyr)
 
+
+best <- function(state, outcome) {
   
-  best <- function(state, outcome) {
+  ## Read outcome data
+  
+  outcome_data <- read.csv("outcome-of-care-measures.csv")
+  
+  
+  ## Put the outcome in lower case
+  
+  outcome <- tolower(outcome)
+  
+  
+  ## Put the State in capital letters
+  
+  state <- toupper(state)
+  
+  
+  ## Check that state and outcome are valid
+  
+  if (!state %in% unique(outcome_data[["State"]])) {
     
-    ## Read outcome data
+    stop("Invalid State", call. = TRUE)
     
-    outcome_data <- read.csv("outcome-of-care-measures.csv")
+  } 
+  
+  if (!outcome %in% c("heart attack", "heart failure", "pneumonia")) {
     
-    ## Put the outcome in lower case
+    stop("Invalid Outcome", call. = TRUE)
     
-    outcome <- tolower(outcome)
+  } 
+  
+  
+  ## Filter by state
+  
+  outcome_data <- outcome_data[grep(state, outcome_data$State), ]
+  
+  
+  ## Getting the column for the selected outcome
+  
+  col <- if (outcome == "heart attack") {
     
-    ## Put the State in capital letters
+    11
     
-    state <- toupper(state)
+  } else if (outcome == "heart failure") {
     
-    ## Check that state and outcome are valid
+    17
     
-    if (!state %in% unique(outcome_data[["State"]])) {
-      
-      stop("Invalid State", call. = TRUE)
-      
-    } 
+  } else {
     
-    if (!outcome %in% c("heart attack", "heart failure", "pneumonia")) {
-      
-      stop("Invalid Outcome", call. = TRUE)
-      
-    } 
-    
-    ## Filter by state
-    
-    outcome_data <- outcome_data[grep(state, outcome_data$State), ]
-    
-    
-    ## Getting the column for the selected outcome
-    
-    col <- if (outcome == "heart attack") {
-      11
-    } else if (outcome == "heart failure") {
-      17
-    } else {
-      23
-    }
-    
-    ## Getting the lowest rate in the State and outcome selected
-    
-    outcome_data <- select(outcome_data, 2, all_of(col))
-    
-    colnames(outcome_data) <- c("Hospital", "Outcome")
-    
-    suppressWarnings(outcome_data$Outcome <- as.numeric(as.character(outcome_data$Outcome)))
-    
-    outcome_data <- outcome_data[order(outcome_data$Outcome), ]
-    
-    ## Return hospital name in that state with lowest 30-day death rate
-    
-    return(outcome_data[[1, 1]])
+    23
     
   }
+  
+  
+  ## Getting the lowest rate in the State and outcome selected
+  
+  outcome_data <- select(outcome_data, 2, all_of(col))
+  
+  colnames(outcome_data) <- c("Hospital", "Rate")
+  
+  suppressWarnings(outcome_data$Rate <- as.numeric(as.character(outcome_data$Rate)))
+  
+  outcome_data <- outcome_data[order(outcome_data$Rate), ]
+  
+  
+  ## Return hospital name in that state with lowest 30-day death rate
+  
+  return(outcome_data[[1, 1]])
+  
+}
 
 ####### Test ############
 
