@@ -107,4 +107,5 @@ rankhospital <- function(state, outcome, num = "best") {
 
 rankhospital("TX", "heart failure", 4)
 rankhospital("MD", "heart attack", "worst")
-rankhospital("MN", "heart attack", 5000)
+#rankhospital("MN", "heart attack", 5000)
+rankhospital("AL", "heart attack", 20)
