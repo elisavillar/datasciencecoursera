@@ -86,4 +86,4 @@ best("MD", "heart attack")
 best("MD", "pneumonia")
 best("BB", "heart attack")
 best("NY", "hert attack")
-
+best("SC", "heart attack")
